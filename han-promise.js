@@ -1,4 +1,5 @@
- function Promise() {
+ //----------------------   BEGIN of Implementation -------------------------------
+function Promise() {
         this.state = 'pending';
         this.value = null;
         this.thens = [];
@@ -55,6 +56,12 @@
             }
         }
     }
+//----------------------   END of Implementation -------------------------------
+
+
+
+
+//----------------------   TEST code -------------------------------
 
     function createPromise(msg, delay) {
         var deferred = new Deferred();
