@@ -3,7 +3,7 @@
         this.value = null;
         this.thens = [];
         this.then = function(success, error) {
-            var deferred = new Deferred();
+            let deferred = new Deferred();
             if (this.state === 'pending') {
                 this.thens.push({
                     deferred: deferred,
@@ -13,7 +13,7 @@
             }
 
             if (this.state === 'resolved') {
-                var returnVal = success(this.value);
+                let returnVal = success(this.value);
                 return returnVal instanceof Promise ? returnVal : this;
 
             } else if (this.state === 'rejected' && error) {
@@ -27,7 +27,7 @@
     function Deferred() {
         this.promise = new Promise();
         this.resolve = function(data) {
-            var then = data && data.then;
+            let then = data && data.then;
             if (typeof then === 'function') {
                 then.call(data, val => {
                     this.resolve(val);
@@ -55,14 +55,14 @@
     //----------------------   TEST code -------------------------------
 
     function createPromise(msg, delay) {
-        var deferred = new Deferred();
+        let deferred = new Deferred();
         setTimeout(function() {
             deferred.resolve(msg);
         }, delay ? delay : 0);
         return deferred.promise;
     };
 
-    var p = createPromise('1st promise', 500);
+    let p = createPromise('1st promise', 500);
 
     function logMsg1(input) {
         console.log(input);
