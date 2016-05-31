@@ -31,6 +31,8 @@
             if (typeof then === 'function') {
                 then.call(data, val => {
                     this.resolve(val);
+                }, val => {
+                    this.reject(val);
                 });
             } else {
                 this.promise.value = data;
