@@ -1,9 +1,9 @@
-function Promise() {
+    function Promise() {
         this.state = 'pending';
         this.value = null;
         this.thens = [];
         this.then = function(success, error) {
-            var deferred = chainedDefer;
+            var deferred = new Deferred();
             if (this.state === 'pending') {
                 this.thens.push({
                     deferred: deferred,
@@ -29,23 +29,23 @@ function Promise() {
         this.resolve = function(data) {
             var then = data && data.then;
             if (typeof then === 'function') {
-                then.call(data, function(val) {
+                then.call(data, val => {
                     this.resolve(val);
-                }.bind(this));
+                });
             } else {
                 this.promise.value = data;
                 this.promise.state = 'resolved';
-                this.promise.thens.forEach(function(thenWrapper) {
+                this.promise.thens.forEach(thenWrapper => {
                     thenWrapper.deferred.resolve(thenWrapper.success(data));
-                }.bind(this));
+                });
             }
         };
         this.reject = function(data) {
             this.promise.value = data;
             this.promise.state = 'rejected';
-            this.promise.thens.forEach(function(thenWrapper) {
+            this.promise.thens.forEach(thenWrapper => {
                 thenWrapper.deferred.error(thenWrapper.success(data));
-            }.bind(this));
+            });
         }
     }
 
