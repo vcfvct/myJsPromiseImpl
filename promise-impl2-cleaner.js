@@ -28,6 +28,8 @@
         this.promise = new Promise();
         this.resolve = function(data) {
             let then = data && data.then;
+            // here when the success returns a new Promise, we attach the current resolve/reject to the new promise's success/error. 
+            // so when the new promise(here is the `data`) is resolved, we could execute the resolve/reject of the current deferred. 
             if (typeof then === 'function') {
                 then.call(data, val => {
                     this.resolve(val);
