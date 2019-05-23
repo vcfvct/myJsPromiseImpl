@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 class Observable {
     /**
       * @constructor
@@ -28,14 +30,14 @@ class Observable {
     // add as a static method on Observable so it can be used as
     // Observable.of()
     static of(...args) {
-        return new Observable((obs) => {
-            args.forEach(val => obs.onNext(val));
-            obs.onCompleted();
+        return new Observable((observerOf) => {
+            args.forEach(val => observerOf.onNext(val));
+            observerOf.onCompleted();
 
             return {
                 unsubscribe: () => {
                     // just make sure none of the original subscriber's methods are never called.
-                    obs = {
+                    observerOf = {
                         onNext: () => { },
                         onError: () => { },
                         onCompleted: () => { }
@@ -56,10 +58,40 @@ class Observable {
             };
         });
     }
+
+    map(fn) {
+        return new Observable((observerMap) => {
+            return this.subscribe(
+                v => observerMap.onNext(fn(v))
+            );
+        });
+    }
+
+    filter(fn) {
+        return new Observable((observerFilter) => {
+            return this.subscribe(
+                v => fn(v) && observerFilter.onNext(v)
+            )
+        })
+    }
+
+    take(n) {
+        return new Observable((observerTake) => {
+            let count = 0
+            return this.subscribe(
+                (v) => {
+                    n > count++ ? observerTake.onNext(v) : observerTake.onCompleted();
+                }
+            )
+        });
+    }
 }
 
 (() => {
-    Observable.of(1, 2, 'hi')
+    Observable.of(1, 2, 3, 4, 5, 6)
+        .take(4)
+        .map(x => x * 5)
+        .filter(x => x % 2 === 0)
         .subscribe(
             console.log
         )

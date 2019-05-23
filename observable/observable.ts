@@ -59,6 +59,48 @@ export class Observable {
             };
         });
     }
+
+    map(fn: Function): Observable {
+        return new Observable((observer) => {
+            return this.subscribe(
+                v => observer.onNext(fn(v))
+            );
+        });
+    }
+
+    filter(predicateFn): Observable {
+        return new Observable((observer) => {
+            return this.subscribe(
+                (val) => {
+                    // only emit the value if it passes the filter function
+                    if (predicateFn(val)) {
+                        observer.onNext(val);
+                    }
+                },
+                (e) => observer.onError(e),
+                () => observer.onCompleted()
+            );
+        });
+    }
+
+    take(count: number): Observable {
+        return new Observable((observer) => {
+            let currentCount = 0;
+            return this.subscribe(
+                (val) => {
+                    if (currentCount < count) {
+                        observer.onNext(val);
+                        currentCount++
+                    } else if (currentCount === count) {
+                        observer.onCompleted();
+                        currentCount++
+                    }
+                },
+                (e) => observer.onError(e),
+                () => observer.onCompleted()
+            );
+        });
+    }
 }
 
 (() => {
