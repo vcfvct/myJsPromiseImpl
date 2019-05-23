@@ -73,9 +73,7 @@ export class Observable {
             return this.subscribe(
                 (val) => {
                     // only emit the value if it passes the filter function
-                    if (predicateFn(val)) {
-                        observer.onNext(val);
-                    }
+                    predicateFn(val) && observer.onNext(val);
                 },
                 (e) => observer.onError(e),
                 () => observer.onCompleted()

@@ -48,11 +48,9 @@ class Observable {
     }
 
     static fromEvent(source, event) {
-        return new Observable((observer) => {
-            const callbackFn = (e) => observer.onNext(e);
-
+        return new Observable((observerFromEvent) => {
+            const callbackFn = (e) => observerFromEvent.onNext(e);
             source.addEventListener(event, callbackFn);
-
             return {
                 unsubscribe: () => source.removeEventListener(event, callbackFn)
             };
